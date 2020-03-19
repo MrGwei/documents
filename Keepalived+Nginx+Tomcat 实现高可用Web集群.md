@@ -60,10 +60,78 @@ export TOMCAT_HOME=/root/environment/apache-tomcat-main
 
 ### 1.2启动Tomcat
 
+```
+./catalina.sh start
+```
+
 分别访问：
 
 	1. http://192.168.6.170:8080/
  	2. http://192.168.6.171:8080/
+
+### 1.3systemd管理Tomcat服务
+
+添加环境变量/etc/profile：
+
+```
+CATALINA_PID="$CATALINA_BASE/tomcat.pid"
+export PATH=$CATALINA_HOME/bin:$PATH
+```
+
+
+
+新建文件：
+
+```
+touch /root/environment/apache-tomcat-main/tomcat.pid
+```
+
+
+
+在/usr/lib/systemd/system/目录下新建tomcat.service文件
+
+```
+[Unit]
+Description=Apache Tomcat 8
+After=syslog.target network.target remote-fs.target nss-lookup.target
+
+[Service]
+Type=forking
+PIDFile=/root/environment/apache-tomcat-8.5.51/tomcat.pid
+ExecStart=/root/environment/apache-tomcat-8.5.51/bin/startup.sh
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+```
+
+保存并退出，执行命令使Tomcat随开机自启：
+
+```
+systemctl enable tomcat.service
+```
+
+**Q：Failed to execute operation: Access denied**
+
+**A:** 执行上命令报错：则关闭SeLinux解决；
+
+另外：
+
+```
+systemctl start tomcat.service # 启动Tomcat
+```
+
+```
+systemctl stop tomcat9.service # 关闭Tomcat
+```
+
+```
+systemctl restart tomcat9.service # 重启Tomcat
+```
+
+
 
 ## 2.安装Nginx
 
@@ -429,4 +497,28 @@ systemctl disable firewalld.service
 ```
 
 
+
+## QA
+
+**Q:解决Nginx的connect() to 127.0.0.1:8080 failed (13: Permission denied) while connect**
+
+A:SeLinux导致，检查命令，可以选择如下方式解决：
+
+1. 查看SeLinux状态：
+
+   ```
+   getenforce
+   ```
+
+   Disabled：禁用
+
+   Permissive：开启
+
+2. 修改配置文件/etc/selinux/config：
+
+   ```
+   SELINUX=disabled
+   ```
+
+   
 

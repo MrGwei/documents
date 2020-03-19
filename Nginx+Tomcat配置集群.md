@@ -47,7 +47,7 @@ Nginx提供的负载均衡策略有2种：**内置策略和扩展策略**。内�
 
 #user nginx;
 user nobody;
-worker_processes auto;
+worker_processes auto; #工作进程的个数，一般与计算机的cpu核数一致
 error_log /var/log/nginx/error.log;
 pid /run/nginx.pid;
 
@@ -55,7 +55,7 @@ pid /run/nginx.pid;
 include /usr/share/nginx/modules/*.conf;
 
 events {
-    worker_connections 1024;
+    worker_connections 1024; #单个进程最大连接数（最大连接数=连接数*进程数）
 }
 
 http {
@@ -65,30 +65,34 @@ http {
 
     access_log  /var/log/nginx/access.log  main;
 
+	#开启高效文件传输模式，sendfile指令指定nginx是否调用sendfile函数来输出文件，对于普通应用设为 on，如果用来进行下载等应用磁盘IO重负载应用，可设置为off，以平衡磁盘与网络I/O处理速度，降低系统的负载。注意：如果图片显示不正常把这个改成off。
     sendfile            on;
     tcp_nopush          on;
     tcp_nodelay         on;
-    keepalive_timeout   65;
+    keepalive_timeout   65; #长连接超时时间，单位是秒
     types_hash_max_size 2048;
 
-    include             /etc/nginx/mime.types;
-    default_type        application/octet-stream;
+    include             /etc/nginx/mime.types; #文件扩展名与文件类型映射表
+    default_type        application/octet-stream; #默认文件类型
 
     # Load modular configuration files from the /etc/nginx/conf.d directory.
     # See http://nginx.org/en/docs/ngx_core_module.html#include
     # for more information.
     include /etc/nginx/conf.d/*.conf;
 
-    server {
-        listen       80 default_server;
+	# Nginx的配置
+    server { #每一个server相当于一个代理服务器
+        listen       80 default_server; #监听80端口
         listen       [::]:80 default_server;
-        server_name  _;
+        server_name  _; #当前服务的域名，可以有多个，用空格分隔
         root         /usr/share/nginx/html;
 
         # Load configuration files for the default server block.
         include /etc/nginx/default.d/*.conf;
 
-        location / {
+        location / {#表示匹配的路径，这时配置了/表示所有请求都被匹配到这里
+        	#root   html;
+            #index  index.html index.htm;#当没有指定主页时，默认会选择这个指定的文件，可多个，空格分隔
         }
 
         error_page 404 /404.html;
@@ -369,8 +373,6 @@ getenforce
    ```
    setenforce 0
    ```
-
-   
 
 2. 永久关闭，修改/etc/selinux/config文件
 
