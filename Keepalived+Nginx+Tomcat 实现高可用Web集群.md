@@ -240,6 +240,14 @@ chkconfig nginx on
 
 
 
+#### 2.4 重新加载配置文件
+
+```
+nginx -s reload
+```
+
+
+
 ## 3.安装Keepalived
 
 官网：
@@ -494,6 +502,30 @@ systemctl stop firewalld.service
 
 ```
 systemctl disable firewalld.service
+```
+
+### 5.4 查看当前开放端口
+
+```
+firewall-cmd --list-ports
+```
+
+### 5.5 重新加载
+
+```
+firewall-cmd --reload
+```
+
+### 5.5 添加端口
+
+```
+firewall-cmd --zone=public --add-port=8082/tcp --permanent
+```
+
+### 5.6 删除端口
+
+```
+firewall-cmd --zone=public --remove-port=8082/tcp --permanent
 ```
 
 

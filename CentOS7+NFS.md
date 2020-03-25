@@ -76,7 +76,7 @@ NFS，是Network File System的简写，即网络文件系统。网络文件系�
 - 建立同步文件夹.
 
   ```
-  mkdir -p /app/file
+  mkdir -p /data/file/upload
   ```
 
   
@@ -84,7 +84,7 @@ NFS，是Network File System的简写，即网络文件系统。网络文件系�
 - 对同步文件夹进行授权
 
   ```
-  chown -R nfsnobody.nfsnobody /app/file/
+  chown -R nfsnobody.nfsnobody /data/file/upload
   ```
 
   
@@ -92,7 +92,7 @@ NFS，是Network File System的简写，即网络文件系统。网络文件系�
 - 在配置文件中加入如下配置
 
   ```
-  /app/file *(rw,sync)
+  /app/file *(rw,sync,no_root_squash)
   ```
 
   执行`exportfs –rv`让配置立即生效
@@ -158,7 +158,7 @@ NFS，是Network File System的简写，即网络文件系统。网络文件系�
 - 将应用文件夹挂在到服务器上
 
   ```
-  mount –t nfs 172.31.63.132:/app/file /app/file
+  mount –t nfs 172.31.63.132:/data/file/upload /app/file
   ```
 
   挂载完成后可以使用`mount | grep file`命令查看挂载情况

@@ -15,12 +15,12 @@ useradd -g sftp -s /sbin/nologin -M sftp
 
 
 
-## 3、修改sftp用户密码为123
+## 3、修改sftp用户密码
 ```
-passwd sftp ：sftp@httc.com
+passwd sftp 
 ```
 
-
+password: sftp@httc.com
 
 ## 4、创建sftp用户的跟目录和属主，属组修改权限755
 ```
@@ -57,7 +57,7 @@ Match User sftp
     X11Forwarding no
     AllowTcpForwarding no
     ForceCommand internal-sftp
-    ChrootDirectory /usr/sftp
+    ChrootDirectory /data/file
 ```
 
 
