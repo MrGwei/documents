@@ -131,7 +131,7 @@ systemctl restart mysqld
 执行以下命令开启远程访问限制（注意：下面命令开启的IP是 192.168.0.1，如要开启所有的，用%代替IP）：
 
 ```
-grant all privileges on *.* to 'root'@'192.168.0.1' identified by 'password' with grant option;
+grant all privileges on *.* to 'root'@'%' identified by 'password' with grant option;
 ```
 
 然后再输入下面两行命令:
